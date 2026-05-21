@@ -11,6 +11,7 @@ import {
 const firebaseConfig = {
   apiKey: "AIzaSyDDq5lKwhll2EUUpourRT_MkHE3Mj7aTtE",
   authDomain: "coins-accounting.firebaseapp.com",
+  databaseURL: "https://coins-accounting-default-rtdb.firebaseio.com/",
   projectId: "coins-accounting",
   storageBucket: "coins-accounting.firebasestorage.app",
   messagingSenderId: "852862668508",

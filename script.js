@@ -66,4 +66,38 @@ onValue(dataRef, (snapshot)=>{
 
   let total = 0;
 
+  const data = snapshot.val();
+
+  if(!data){
+    balance.textContent = "0円";
+    return;
+  }
+
+  const entries = Object.entries(data).reverse();
+
+  entries.forEach(([key,item])=>{
+
+    const li = document.createElement("li");
+
+    const sign =
+      item.type === "income" ? "+" : "-";
+
+    if(item.type === "income"){
+      total += item.amount;
+    }else{
+      total -= item.amount;
+    }
+
+    li.innerHTML = `
+      ${item.title}
+      ${sign}${item.amount}円
+      <button onclick="deleteData('${key}')">
+        削除
+      </button>
+    `;
+
+    list.appendChild(li);
+  });
+
+  balance.textContent = `${total}円`;
 });

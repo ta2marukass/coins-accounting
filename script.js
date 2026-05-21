@@ -95,6 +95,15 @@ onValue(dataRef, (snapshot)=>{
         削除
       </button>
     `;
+    
+  const deleteBtn =
+    li.querySelector(".delete-btn");
+
+  deleteBtn.addEventListener("click", async ()=>{
+
+    await remove(ref(db, `accountData/${key}`));
+
+  });
 
     list.appendChild(li);
   });

@@ -110,6 +110,3 @@ onValue(dataRef, (snapshot)=>{
 
   balance.textContent = `${total}円`;
 });
-window.deleteData = async function(key){
-  await remove(ref(db, `accountData/${key}`));
-}

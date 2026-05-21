@@ -18,7 +18,6 @@ const firebaseConfig = {
   appId: "1:852862668508:web:7ad243fc8244a352f4ee19",
   measurementId: "G-VBREPSYJEC"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
@@ -91,19 +90,29 @@ onValue(dataRef, (snapshot)=>{
     li.innerHTML = `
       ${item.title}
       ${sign}${item.amount}円
-      <button onclick="deleteData('${key}')">
-        削除
-      </button>
+      <button class="delete-btn">削除</button>
     `;
-    
-  const deleteBtn =
-    li.querySelector(".delete-btn");
 
-  deleteBtn.addEventListener("click", async ()=>{
+    const deleteBtn =
+      li.querySelector(".delete-btn");
 
-    await remove(ref(db, `accountData/${key}`));
+    deleteBtn.addEventListener("click", async ()=>{
 
-  });
+      try{
+
+        await remove(ref(db, `accountData/${key}`));
+
+        console.log("削除成功");
+
+      }catch(error){
+
+        console.error(error);
+
+        alert(error.message);
+
+      }
+
+    });
 
     list.appendChild(li);
   });

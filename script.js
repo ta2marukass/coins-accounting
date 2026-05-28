@@ -19,76 +19,81 @@ const firebaseConfig = {
   measurementId: "G-VBREPSYJEC"
 };
 
-
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+const dataRef = ref(db, "accountData");
 
-const titleInput = document.getElementById("title");
-const amountInput = document.getElementById("amount");
-const addBtn = document.getElementById("addBtn");
+document.addEventListener("DOMContentLoaded",()=>{
 
-const plusBtn = document.getElementById("plusBtn");
-const minusBtn = document.getElementById("minusBtn");
-const countText = document.getElementById("count");
+  const titleInput =
+    document.getElementById("title");
 
-const balance = document.getElementById("balance");
-const list = document.getElementById("list");
+  const amountInput =
+    document.getElementById("amount");
 
-const tabInputBtn =
-  document.getElementById("tabInputBtn");
+  const addBtn =
+    document.getElementById("addBtn");
 
-const tabBalanceBtn =
-  document.getElementById("tabBalanceBtn");
+  const countText =
+    document.getElementById("count");
 
-const inputTab =
-  document.getElementById("input-tab");
+  const balance =
+    document.getElementById("balance");
 
-const balanceTab =
-  document.getElementById("balance-tab");
+  const list =
+    document.getElementById("list");
 
-const dataRef =
-  ref(db,"accountData");
+  const inputTab =
+    document.getElementById("input-tab");
 
-let count = 1;
+  const balanceTab =
+    document.getElementById("balance-tab");
 
-function renderCount(){
-  countText.textContent = count;
-}
+  let count = 1;
 
-plusBtn.addEventListener("click", ()=>{
-
-  count++;
-
-  renderCount();
-
-});
-
-minusBtn.addEventListener("click", ()=>{
-
-  if(count > 1){
-    count--;
-    renderCount();
+  function updateCount(){
+    countText.textContent = count;
   }
 
-});
+  document
+    .querySelector('[data-action="plus"]')
+    .addEventListener("click",()=>{
 
-tabInputBtn.addEventListener("click", ()=>{
+      count++;
+      updateCount();
 
-  inputTab.classList.remove("hidden");
-  balanceTab.classList.add("hidden");
+    });
 
-});
+  document
+    .querySelector('[data-action="minus"]')
+    .addEventListener("click",()=>{
 
-tabBalanceBtn.addEventListener("click", ()=>{
+      if(count > 1){
+        count--;
+        updateCount();
+      }
 
-  inputTab.classList.add("hidden");
-  balanceTab.classList.remove("hidden");
+    });
 
-});
+  document
+    .getElementById("tab-input")
+    .addEventListener("click",()=>{
 
-addBtn.addEventListener(
-  "click",
-  async ()=>{
+      inputTab.classList.remove("hidden");
+      balanceTab.classList.add("hidden");
+
+    });
+
+  document
+    .getElementById("tab-balance")
+    .addEventListener("click",()=>{
+
+      inputTab.classList.add("hidden");
+      balanceTab.classList.remove("hidden");
+
+    });
+
+  addBtn.addEventListener("click",async ()=>{
 
     const title =
       titleInput.value.trim();
@@ -96,16 +101,13 @@ addBtn.addEventListener(
     const amount =
       Number(amountInput.value);
 
-    if(title === ""){
+    if(!title){
       alert("商品名を入力してください");
       return;
     }
 
-    if(
-      amount <= 0 ||
-      isNaN(amount)
-    ){
-      alert("値段を入力してください");
+    if(amount <= 0 || isNaN(amount)){
+      alert("商品の値段を入力してください");
       return;
     }
 
@@ -113,7 +115,7 @@ addBtn.addEventListener(
       title,
       amount,
       count,
-      createdAt: Date.now()
+      createdAt:Date.now()
     });
 
     titleInput.value = "";
@@ -121,49 +123,49 @@ addBtn.addEventListener(
 
     count = 1;
 
-    renderCount();
+    updateCount();
 
-  }
-);
+  });
 
-onValue(dataRef,(snapshot)=>{
+  onValue(dataRef,(snapshot)=>{
 
-  let total = 0;
+    let total = 0;
 
-  list.innerHTML = "";
+    list.innerHTML = "";
 
-  const data = snapshot.val();
+    const data = snapshot.val();
 
-  if(!data){
+    if(!data){
 
-    balance.textContent = "0円";
+      balance.textContent = "0円";
 
-    return;
-  }
+      return;
+    }
 
-  Object
-    .values(data)
-    .reverse()
-    .forEach((item)=>{
+    Object.values(data)
+      .reverse()
+      .forEach((item)=>{
 
-      const subtotal =
-        item.amount * item.count;
+        const subtotal =
+          item.amount * item.count;
 
-      total += subtotal;
+        total += subtotal;
 
-      const li =
-        document.createElement("li");
+        const li =
+          document.createElement("li");
 
-      li.className = "item";
+        li.className = "item";
 
-      li.textContent =
-        `${item.title} ${item.amount}円 × ${item.count} = ${subtotal}円`;
+        li.textContent =
+          `${item.title} ${item.amount}円 × ${item.count} = ${subtotal}円`;
 
-      list.appendChild(li);
+        list.appendChild(li);
 
-    });
+      });
 
-  balance.textContent =
-    `${total}円`;
+    balance.textContent =
+      `${total}円`;
+
+  });
 
 });

@@ -50,7 +50,12 @@ document.addEventListener("DOMContentLoaded",()=>{
   const balanceTab =
     document.getElementById("balance-tab");
 
-  let count = 1;
+  const counts = {
+  plain: 0,
+  strawberry: 0,
+  cocoa: 0,
+  matcha: 0
+};
 
   function updateCount(){
     countText.textContent = count;

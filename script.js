@@ -18,9 +18,12 @@ const firebaseConfig = {
   appId: "1:852862668508:web:7ad243fc8244a352f4ee19",
   measurementId: "G-VBREPSYJEC"
 };
-const app = initializeApp(firebaseConfig);
 
-const db = getDatabase(app);
+const app =
+  initializeApp(firebaseConfig);
+
+const db =
+  getDatabase(app);
 
 const titleInput =
   document.getElementById("title");
@@ -33,9 +36,6 @@ const typeInput =
 
 const addBtn =
   document.getElementById("addBtn");
-
-const list =
-  document.getElementById("list");
 
 const balance =
   document.getElementById("balance");
@@ -83,8 +83,6 @@ addBtn.addEventListener(
 
 onValue(dataRef,(snapshot)=>{
 
-  list.innerHTML="";
-
   let total=0;
 
   const data =
@@ -98,22 +96,8 @@ onValue(dataRef,(snapshot)=>{
     return;
   }
 
-  const entries =
-    Object.entries(data).reverse();
-
-  entries.forEach(
-    ([key,item])=>{
-
-      const li =
-        document.createElement("li");
-
-      li.className =
-        "item";
-
-      const sign =
-        item.type==="income"
-        ? "+"
-        : "-";
+  Object.values(data)
+    .forEach((item)=>{
 
       if(
         item.type==="income"
@@ -123,41 +107,7 @@ onValue(dataRef,(snapshot)=>{
         total -= item.amount;
       }
 
-      li.innerHTML = `
-        <div class="item-left">
-          <strong>${item.title}</strong>
-
-          <span class="${item.type}">
-            ${sign}${item.amount}円
-          </span>
-        </div>
-
-        <button class="delete-btn">
-          削除
-        </button>
-      `;
-
-      const deleteBtn =
-        li.querySelector(".delete-btn");
-
-      deleteBtn.addEventListener(
-        "click",
-        async ()=>{
-
-          await remove(
-            ref(
-              db,
-              `accountData/${key}`
-            )
-          );
-
-        }
-      );
-
-      list.appendChild(li);
-
-    }
-  );
+    });
 
   balance.textContent =
     `${total}円`;

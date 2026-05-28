@@ -19,166 +19,110 @@ const firebaseConfig = {
   measurementId: "G-VBREPSYJEC"
 };
 
-
-
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const dataRef = ref(db, "accountData");
 
-document.addEventListener("DOMContentLoaded", () => {
+const counts = {
+  plain: 0,
+  strawberry: 0,
+  cocoa: 0,
+  matcha: 0
+};
 
-  const addBtn = document.getElementById("addBtn");
+function updateCountDisplay(key){
+  document.getElementById(
+    `count-${key}`
+  ).textContent = counts[key];
+}
 
-  const balance =
-    document.getElementById("balance");
+function updatePreviewTotal(){
 
-  const previewTotal =
-    document.getElementById("previewTotal");
+  let total = 0;
 
-  const list =
-    document.getElementById("list");
+  Object.keys(counts).forEach((key)=>{
 
-  const inputTab =
-    document.getElementById("input-tab");
-
-  const balanceTab =
-    document.getElementById("balance-tab");
-
-  const counts = {
-    plain: 0,
-    strawberry: 0,
-    cocoa: 0,
-    matcha: 0
-  };
-
-  function updatePreviewTotal() {
-
-    const products = [
-      "plain",
-      "strawberry",
-      "cocoa",
-      "matcha"
-    ];
-
-    let total = 0;
-
-    for (const key of products) {
-
-      const input =
+    const price =
+      Number(
         document.getElementById(
           `price-${key}`
-        );
+        ).value
+      ) || 0;
 
-      const price =
-        parseInt(
-          input?.value || "0",
-          10
-        ) || 0;
+    total +=
+      price * counts[key];
+  });
 
-      const count =
-        counts[key] || 0;
+  document.getElementById(
+    "previewTotal"
+  ).textContent = `${total}円`;
+}
 
-      total +=
-        price * count;
-    }
+document
+  .querySelectorAll(".plus")
+  .forEach((btn)=>{
 
-    previewTotal.textContent =
-      `${total}円`;
-  }
+    btn.addEventListener("click",()=>{
 
-  document
-    .querySelectorAll("[data-action]")
-    .forEach((btn) => {
+      const key = btn.dataset.key;
 
-      btn.addEventListener("click", () => {
+      counts[key]++;
 
-        const target =
-          btn.dataset.target;
+      updateCountDisplay(key);
 
-        const action =
-          btn.dataset.action;
+      updatePreviewTotal();
 
-        if (action === "plus") {
-          counts[target]++;
-        }
+    });
 
-        if (
-          action === "minus" &&
-          counts[target] > 0
-        ) {
-          counts[target]--;
-        }
+  });
 
-        document.getElementById(
-          `count-${target}`
-        ).textContent =
-          counts[target];
+document
+  .querySelectorAll(".minus")
+  .forEach((btn)=>{
+
+    btn.addEventListener("click",()=>{
+
+      const key = btn.dataset.key;
+
+      if(counts[key] > 0){
+
+        counts[key]--;
+
+        updateCountDisplay(key);
 
         updatePreviewTotal();
 
-      });
+      }
 
     });
 
-  document
-    .querySelectorAll(
-      'input[id^="price-"]'
-    )
-    .forEach((input) => {
+  });
 
-      input.addEventListener(
-        "input",
-        updatePreviewTotal
-      );
+document
+  .querySelectorAll("input")
+  .forEach((input)=>{
 
-    });
-
-  document
-    .getElementById("tab-input")
-    ?.addEventListener(
-      "click",
-      () => {
-
-        inputTab.classList.remove(
-          "hidden"
-        );
-
-        balanceTab.classList.add(
-          "hidden"
-        );
-
-      }
+    input.addEventListener(
+      "input",
+      updatePreviewTotal
     );
 
-  document
-    .getElementById("tab-balance")
-    ?.addEventListener(
-      "click",
-      () => {
+  });
 
-        inputTab.classList.add(
-          "hidden"
-        );
-
-        balanceTab.classList.remove(
-          "hidden"
-        );
-
-      }
-    );
-
-  addBtn.addEventListener(
+document
+  .getElementById("addBtn")
+  .addEventListener(
     "click",
-    async () => {
+    async ()=>{
 
-      const products = [
-        ["プレーン味", "plain"],
-        ["ストロベリー味", "strawberry"],
-        ["ココア味", "cocoa"],
-        ["抹茶味", "matcha"]
-      ];
+      const names = {
+        plain:"プレーン味",
+        strawberry:"ストロベリー味",
+        cocoa:"ココア味",
+        matcha:"抹茶味"
+      };
 
-      for (const [name, key] of products) {
+      for(const key of Object.keys(counts)){
 
         const price =
           Number(
@@ -190,32 +134,27 @@ document.addEventListener("DOMContentLoaded", () => {
         const count =
           counts[key];
 
-        if (
+        if(
           price > 0 &&
           count > 0
-        ) {
+        ){
 
-          await push(
-            dataRef,
-            {
-              title: name,
-              amount: price,
-              count: count,
-              createdAt: Date.now()
-            }
-          );
+          await push(dataRef,{
+            title:names[key],
+            amount:price,
+            count:count,
+            createdAt:Date.now()
+          });
 
         }
+
+        counts[key] = 0;
+
+        updateCountDisplay(key);
 
         document.getElementById(
           `price-${key}`
         ).value = "";
-
-        counts[key] = 0;
-
-        document.getElementById(
-          `count-${key}`
-        ).textContent = "0";
 
       }
 
@@ -224,83 +163,100 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   );
 
-  onValue(dataRef, (snapshot) => {
+onValue(dataRef,(snapshot)=>{
 
-    let total = 0;
+  const list =
+    document.getElementById("list");
 
-    list.innerHTML = "";
+  list.innerHTML = "";
 
-    const data =
-      snapshot.val();
+  let total = 0;
 
-    if (!data) {
+  const data =
+    snapshot.val();
 
-      balance.textContent =
-        "0円";
+  if(!data){
 
-      return;
-    }
+    document.getElementById(
+      "balance"
+    ).textContent = "0円";
 
-    Object
-      .entries(data)
-      .reverse()
-      .forEach(
-        ([key, item]) => {
+    return;
+  }
 
-          const subtotal =
-            item.amount *
-            item.count;
+  Object.entries(data)
+    .reverse()
+    .forEach(([key,item])=>{
 
-          total += subtotal;
+      const subtotal =
+        item.amount * item.count;
 
-          const li =
-            document.createElement(
-              "li"
+      total += subtotal;
+
+      const li =
+        document.createElement("li");
+
+      li.className = "item";
+
+      li.innerHTML = `
+        <span>
+          ${item.title}
+          ${item.amount}円 × ${item.count}
+          = ${subtotal}円
+        </span>
+        <button>削除</button>
+      `;
+
+      li
+        .querySelector("button")
+        .addEventListener(
+          "click",
+          async ()=>{
+            await remove(
+              ref(
+                db,
+                `accountData/${key}`
+              )
             );
+          }
+        );
 
-          li.className =
-            "item";
+      list.appendChild(li);
 
-          li.innerHTML = `
-            <span>
-              ${item.title}
-              ${item.amount}円 × ${item.count}
-              = ${subtotal}円
-            </span>
+    });
 
-            <button class="delete-btn">
-              削除
-            </button>
-          `;
+  document.getElementById(
+    "balance"
+  ).textContent = `${total}円`;
 
-          li
-            .querySelector(
-              ".delete-btn"
-            )
-            .addEventListener(
-              "click",
-              async () => {
+});
 
-                await remove(
-                  ref(
-                    db,
-                    \`accountData/\${key}\`
-                  )
-                );
+document
+  .getElementById("tab-input")
+  .addEventListener("click",()=>{
 
-              }
-            );
+    document
+      .getElementById("input-tab")
+      .classList.remove("hidden");
 
-          list.appendChild(li);
-
-        }
-      );
-
-    balance.textContent =
-      `${total}円`;
+    document
+      .getElementById("history-tab")
+      .classList.add("hidden");
 
   });
 
-  updatePreviewTotal();
+document
+  .getElementById("tab-history")
+  .addEventListener("click",()=>{
 
-});
+    document
+      .getElementById("input-tab")
+      .classList.add("hidden");
+
+    document
+      .getElementById("history-tab")
+      .classList.remove("hidden");
+
+  });
+
+updatePreviewTotal();

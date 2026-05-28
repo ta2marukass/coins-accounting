@@ -17,220 +17,175 @@ const firebaseConfig = {
   messagingSenderId: "852862668508",
   appId: "1:852862668508:web:7ad243fc8244a352f4ee19",
   measurementId: "G-VBREPSYJEC"
-};
-
-const app = initializeApp(firebaseConfig);
+};const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-
 const dataRef = ref(db, "accountData");
 
-document.addEventListener("DOMContentLoaded",()=>{
+document.addEventListener("DOMContentLoaded", () => {
 
-  const addBtn =
-    document.getElementById("addBtn");
+  const addBtn = document.getElementById("addBtn");
+  const balance = document.getElementById("balance");
+  const list = document.getElementById("list");
 
-  const balance =
-    document.getElementById("balance");
-
-  const list =
-    document.getElementById("list");
-
-  const inputTab =
-    document.getElementById("input-tab");
-
-  const balanceTab =
-    document.getElementById("balance-tab");
+  const inputTab = document.getElementById("input-tab");
+  const balanceTab = document.getElementById("balance-tab");
 
   const counts = {
-    plain:0,
-    strawberry:0,
-    cocoa:0,
-    matcha:0
+    plain: 0,
+    strawberry: 0,
+    cocoa: 0,
+    matcha: 0
   };
 
   document
     .querySelectorAll("[data-action]")
-    .forEach((btn)=>{
+    .forEach((btn) => {
 
-      btn.addEventListener(
-        "click",
-        ()=>{
+      btn.addEventListener("click", () => {
 
-          const target =
-            btn.dataset.target;
+        const target = btn.dataset.target;
+        const action = btn.dataset.action;
 
-          const action =
-            btn.dataset.action;
+        if (action === "plus") counts[target]++;
 
-          if(action==="plus"){
-            counts[target]++;
-          }
-
-          if(
-            action==="minus" &&
-            counts[target]>0
-          ){
-            counts[target]--;
-          }
-
-          document
-            .getElementById(
-              `count-${target}`
-            )
-            .textContent =
-              counts[target];
+        if (
+          action === "minus" &&
+          counts[target] > 0
+        ){
+          counts[target]--;
         }
-      );
+
+        document.getElementById(
+          `count-${target}`
+        ).textContent = counts[target];
+
+      });
 
     });
 
   document
     .getElementById("tab-input")
-    .addEventListener(
-      "click",
-      ()=>{
+    ?.addEventListener("click", () => {
 
-        inputTab.classList.remove("hidden");
+      inputTab?.classList.remove("hidden");
+      balanceTab?.classList.add("hidden");
 
-        balanceTab.classList.add("hidden");
-
-      }
-    );
+    });
 
   document
     .getElementById("tab-balance")
-    .addEventListener(
-      "click",
-      ()=>{
+    ?.addEventListener("click", () => {
 
-        inputTab.classList.add("hidden");
+      inputTab?.classList.add("hidden");
+      balanceTab?.classList.remove("hidden");
 
-        balanceTab.classList.remove("hidden");
+    });
 
-      }
-    );
-
-  addBtn.addEventListener(
+  addBtn?.addEventListener(
     "click",
-    async ()=>{
+    async () => {
 
       const products = [
-        ["プレーン味","plain"],
-        ["ストロベリー味","strawberry"],
-        ["ココア味","cocoa"],
-        ["抹茶味","matcha"]
+        ["プレーン味", "plain"],
+        ["ストロベリー味", "strawberry"],
+        ["ココア味", "cocoa"],
+        ["抹茶味", "matcha"]
       ];
 
-      for(
-        const [name,key]
-        of products
-      ){
+      for (const [name, key] of products) {
 
         const price =
           Number(
-            document
-              .getElementById(
-                `price-${key}`
-              )
-              .value
+            document.getElementById(
+              `price-${key}`
+            )?.value
           );
 
-        const count =
-          counts[key];
+        const count = counts[key];
 
-        if(
+        if (
           price > 0 &&
           count > 0
-        ){
+        ) {
 
-          await push(
-            dataRef,
-            {
-              title:name,
-              amount:price,
-              count:count,
-              createdAt:Date.now()
-            }
-          );
+          await push(dataRef, {
+            title: name,
+            amount: price,
+            count: count,
+            createdAt: Date.now()
+          });
 
         }
 
-        document
-          .getElementById(
+        const priceInput =
+          document.getElementById(
             `price-${key}`
-          )
-          .value = "";
+          );
+
+        if(priceInput){
+          priceInput.value = "";
+        }
 
         counts[key] = 0;
 
-        document
-          .getElementById(
-            `count-${key}`
-          )
-          .textContent = "0";
-
+        document.getElementById(
+          `count-${key}`
+        ).textContent = "0";
       }
 
     }
   );
 
-  onValue(
-    dataRef,
-    (snapshot)=>{
+  onValue(dataRef, (snapshot) => {
 
-      let total = 0;
+    const data = snapshot.val();
 
+    let total = 0;
+
+    if(list){
       list.innerHTML = "";
+    }
 
-      const data =
-        snapshot.val();
+    if (!data) {
 
-      if(!data){
-
-        balance.textContent =
-          "0円";
-
-        return;
+      if(balance){
+        balance.textContent = "0円";
       }
 
-      Object
-        .entries(data)
-        .reverse()
-        .forEach(
-          ([key,item])=>{
+      return;
+    }
 
-            const subtotal =
-              item.amount *
-              item.count;
+    Object.entries(data)
+      .reverse()
+      .forEach(([key, item]) => {
 
-            total += subtotal;
+        const subtotal =
+          item.amount * item.count;
 
-            const li =
-              document.createElement("li");
+        total += subtotal;
 
-            li.className =
-              "item";
+        if(list){
 
-            li.innerHTML = `
-              <span>
-                ${item.title}
-                ${item.amount}円 × ${item.count}
-                = ${subtotal}円
-              </span>
+          const li =
+            document.createElement("li");
 
-              <button class="delete-btn">
-                削除
-              </button>
-            `;
+          li.className = "item";
 
-            const deleteBtn =
-              li.querySelector(
-                ".delete-btn"
-              );
+          li.innerHTML = `
+            <span>
+              ${item.title}
+              ${item.amount}円 × ${item.count}
+              = ${subtotal}円
+            </span>
+            <button class="delete-btn">
+              削除
+            </button>
+          `;
 
-            deleteBtn.addEventListener(
+          li.querySelector(".delete-btn")
+            .addEventListener(
               "click",
-              async ()=>{
+              async () => {
 
                 await remove(
                   ref(
@@ -242,15 +197,17 @@ document.addEventListener("DOMContentLoaded",()=>{
               }
             );
 
-            list.appendChild(li);
+          list.appendChild(li);
 
-          }
-        );
+        }
 
+      });
+
+    if(balance){
       balance.textContent =
         `${total}円`;
-
     }
-  );
+
+  });
 
 });

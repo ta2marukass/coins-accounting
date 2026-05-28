@@ -20,11 +20,20 @@ h1{
   margin-bottom:20px;
 }
 
+.tabs{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+.tabs button{
+  flex:1;
+}
+
 .card{
   background:white;
   border-radius:12px;
   padding:20px;
-  margin-bottom:20px;
   box-shadow:0 2px 8px rgba(0,0,0,0.1);
 }
 
@@ -54,59 +63,10 @@ button{
   cursor:pointer;
 }
 
-button:hover{
-  opacity:0.9;
-}
-
 #balance{
-  font-size:32px;
+  font-size:36px;
   font-weight:bold;
-  margin-top:10px;
-}
-
-.history-title{
-  margin-top:24px;
-  margin-bottom:12px;
-}
-
-#list{
-  list-style:none;
-}
-
-.item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:12px 0;
-  border-bottom:1px solid #eee;
-}
-
-.item-left{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-}
-
-.income{
-  color:green;
-}
-
-.expense{
-  color:red;
-}
-
-.delete-btn{
-  background:red;
-  padding:8px 12px;
-}
-.tabs{
-  display:flex;
-  gap:8px;
-  margin-bottom:20px;
-}
-
-.tabs button{
-  flex:1;
+  margin-top:16px;
 }
 
 .hidden{

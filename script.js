@@ -19,24 +19,15 @@ const firebaseConfig = {
   measurementId: "G-VBREPSYJEC"
 };
 
-
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+
 const dataRef = ref(db, "accountData");
 
 document.addEventListener("DOMContentLoaded",()=>{
 
-  const titleInput =
-    document.getElementById("title");
-
-  const amountInput =
-    document.getElementById("amount");
-
   const addBtn =
     document.getElementById("addBtn");
-
-  const countText =
-    document.getElementById("count");
 
   const balance =
     document.getElementById("balance");
@@ -51,160 +42,215 @@ document.addEventListener("DOMContentLoaded",()=>{
     document.getElementById("balance-tab");
 
   const counts = {
-  plain: 0,
-  strawberry: 0,
-  cocoa: 0,
-  matcha: 0
-};
-
-  function updateCount(){
-    countText.textContent = count;
-  }
+    plain:0,
+    strawberry:0,
+    cocoa:0,
+    matcha:0
+  };
 
   document
-    .querySelector('[data-action="plus"]')
-    .addEventListener("click",()=>{
+    .querySelectorAll("[data-action]")
+    .forEach((btn)=>{
 
-      count++;
-      updateCount();
+      btn.addEventListener(
+        "click",
+        ()=>{
 
-    });
+          const target =
+            btn.dataset.target;
 
-  document
-    .querySelector('[data-action="minus"]')
-    .addEventListener("click",()=>{
+          const action =
+            btn.dataset.action;
 
-      if(count > 1){
-        count--;
-        updateCount();
-      }
+          if(action==="plus"){
+            counts[target]++;
+          }
+
+          if(
+            action==="minus" &&
+            counts[target]>0
+          ){
+            counts[target]--;
+          }
+
+          document
+            .getElementById(
+              `count-${target}`
+            )
+            .textContent =
+              counts[target];
+        }
+      );
 
     });
 
   document
     .getElementById("tab-input")
-    .addEventListener("click",()=>{
+    .addEventListener(
+      "click",
+      ()=>{
 
-      inputTab.classList.remove("hidden");
-      balanceTab.classList.add("hidden");
+        inputTab.classList.remove("hidden");
 
-    });
+        balanceTab.classList.add("hidden");
+
+      }
+    );
 
   document
     .getElementById("tab-balance")
-    .addEventListener("click",()=>{
+    .addEventListener(
+      "click",
+      ()=>{
 
-      inputTab.classList.add("hidden");
-      balanceTab.classList.remove("hidden");
+        inputTab.classList.add("hidden");
 
-    });
+        balanceTab.classList.remove("hidden");
 
-  addBtn.addEventListener("click",async ()=>{
+      }
+    );
 
-    const title =
-      titleInput.value;
+  addBtn.addEventListener(
+    "click",
+    async ()=>{
 
-    const amount =
-      Number(amountInput.value);
+      const products = [
+        ["プレーン味","plain"],
+        ["ストロベリー味","strawberry"],
+        ["ココア味","cocoa"],
+        ["抹茶味","matcha"]
+      ];
 
-    if(!title){
-      alert("商品名を入力してください");
-      return;
+      for(
+        const [name,key]
+        of products
+      ){
+
+        const price =
+          Number(
+            document
+              .getElementById(
+                `price-${key}`
+              )
+              .value
+          );
+
+        const count =
+          counts[key];
+
+        if(
+          price > 0 &&
+          count > 0
+        ){
+
+          await push(
+            dataRef,
+            {
+              title:name,
+              amount:price,
+              count:count,
+              createdAt:Date.now()
+            }
+          );
+
+        }
+
+        document
+          .getElementById(
+            `price-${key}`
+          )
+          .value = "";
+
+        counts[key] = 0;
+
+        document
+          .getElementById(
+            `count-${key}`
+          )
+          .textContent = "0";
+
+      }
+
     }
+  );
 
-    if(amount <= 0 || isNaN(amount)){
-      alert("商品の値段を入力してください");
-      return;
-    }
+  onValue(
+    dataRef,
+    (snapshot)=>{
 
-    await push(dataRef,{
-      title,
-      amount,
-      count,
-      createdAt:Date.now()
-    });
+      let total = 0;
 
-    titleInput.value = "";
-    amountInput.value = "";
+      list.innerHTML = "";
 
-    count = 1;
-    updateCount();
+      const data =
+        snapshot.val();
 
-  });
+      if(!data){
 
-  onValue(dataRef,(snapshot)=>{
+        balance.textContent =
+          "0円";
 
-    let total = 0;
+        return;
+      }
 
-    list.innerHTML = "";
+      Object
+        .entries(data)
+        .reverse()
+        .forEach(
+          ([key,item])=>{
 
-    const data = snapshot.val();
+            const subtotal =
+              item.amount *
+              item.count;
 
-    if(!data){
+            total += subtotal;
 
-      balance.textContent = "0円";
-      return;
-    }
+            const li =
+              document.createElement("li");
 
-    Object.entries(data)
-      .reverse()
-      .forEach(([key,item])=>{
+            li.className =
+              "item";
 
-        const subtotal =
-          item.amount * item.count;
+            li.innerHTML = `
+              <span>
+                ${item.title}
+                ${item.amount}円 × ${item.count}
+                = ${subtotal}円
+              </span>
 
-        total += subtotal;
+              <button class="delete-btn">
+                削除
+              </button>
+            `;
 
-        const li =
-          document.createElement("li");
-
-        li.className = "item";
-
-        li.innerHTML = `
-          <span>
-            ${item.title}
-            ${item.amount}円 × ${item.count}
-            = ${subtotal}円
-          </span>
-
-          <button class="delete-btn">
-            削除
-          </button>
-        `;
-
-        const deleteBtn =
-          li.querySelector(".delete-btn");
-
-        deleteBtn.addEventListener(
-          "click",
-          async ()=>{
-
-            try{
-
-              await remove(
-                ref(
-                  db,
-                  `accountData/${key}`
-                )
+            const deleteBtn =
+              li.querySelector(
+                ".delete-btn"
               );
 
-            }catch(error){
+            deleteBtn.addEventListener(
+              "click",
+              async ()=>{
 
-              console.error(error);
-              alert("削除に失敗しました");
+                await remove(
+                  ref(
+                    db,
+                    `accountData/${key}`
+                  )
+                );
 
-            }
+              }
+            );
+
+            list.appendChild(li);
 
           }
         );
 
-        list.appendChild(li);
+      balance.textContent =
+        `${total}円`;
 
-      });
-
-    balance.textContent =
-      `${total}円`;
-
-  });
+    }
+  );
 
 });

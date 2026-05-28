@@ -31,17 +31,33 @@ const titleInput =
 const amountInput =
   document.getElementById("amount");
 
-const typeInput =
-  document.getElementById("type");
-
 const addBtn =
   document.getElementById("addBtn");
 
 const balance =
   document.getElementById("balance");
 
+const list =
+  document.getElementById("list");
+
 const dataRef =
   ref(db,"accountData");
+
+let count = 1;
+
+window.changeCount =
+function(num){
+
+  count += num;
+
+  if(count < 1){
+    count = 1;
+  }
+
+  document
+    .getElementById("count")
+    .textContent = count;
+};
 
 addBtn.addEventListener(
   "click",
@@ -53,11 +69,8 @@ addBtn.addEventListener(
     const amount =
       Number(amountInput.value);
 
-    const type =
-      typeInput.value;
-
     if(title===""){
-      alert("内容を入力してください");
+      alert("商品名を入力してください");
       return;
     }
 
@@ -65,25 +78,33 @@ addBtn.addEventListener(
       amount<=0 ||
       isNaN(amount)
     ){
-      alert("金額を入力してください");
+      alert("値段を入力してください");
       return;
     }
 
     await push(dataRef,{
       title,
       amount,
-      type,
+      count,
       createdAt:Date.now()
     });
 
     titleInput.value="";
     amountInput.value="";
+
+    count = 1;
+
+    document
+      .getElementById("count")
+      .textContent = count;
   }
 );
 
 onValue(dataRef,(snapshot)=>{
 
-  let total=0;
+  let total = 0;
+
+  list.innerHTML = "";
 
   const data =
     snapshot.val();
@@ -96,18 +117,28 @@ onValue(dataRef,(snapshot)=>{
     return;
   }
 
-  Object.values(data)
-    .forEach((item)=>{
+  const entries =
+    Object.entries(data).reverse();
 
-      if(
-        item.type==="income"
-      ){
-        total += item.amount;
-      }else{
-        total -= item.amount;
-      }
+  entries.forEach(([key,item])=>{
 
-    });
+    const subtotal =
+      item.amount * item.count;
+
+    total += subtotal;
+
+    const li =
+      document.createElement("li");
+
+    li.className =
+      "item";
+
+    li.textContent =
+      `${item.title} ${item.amount}円 × ${item.count} = ${subtotal}円`;
+
+    list.appendChild(li);
+
+  });
 
   balance.textContent =
     `${total}円`;

@@ -3,36 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport"
-        content="width=device-width,initial-scale=1.0">
+        content="width=device-width, initial-scale=1.0">
 
   <title>会計アプリ</title>
 
   <link rel="stylesheet"
         href="style.css">
 </head>
-
 <body>
 
 <div class="container">
 
-  <h1>会計アプリ</h1>
+  <h1>売上管理アプリ</h1>
 
   <div class="tabs">
-
     <button
-      onclick="showTab('input')"
       type="button"
+      onclick="showTab('input')"
     >
       入力
     </button>
 
     <button
-      onclick="showTab('balance')"
       type="button"
+      onclick="showTab('balance')"
     >
       残高
     </button>
-
   </div>
 
   <div
@@ -45,26 +42,36 @@
       <input
         type="text"
         id="title"
-        placeholder="内容"
+        placeholder="商品名"
       >
 
       <input
         type="number"
         id="amount"
-        placeholder="金額"
+        placeholder="商品の値段"
       >
 
-      <select id="type">
+      <div class="count-box">
 
-        <option value="expense">
-          支出
-        </option>
+        <button
+          type="button"
+          onclick="changeCount(-1)"
+        >
+          −
+        </button>
 
-        <option value="income">
-          収入
-        </option>
+        <span id="count">
+          1
+        </span>
 
-      </select>
+        <button
+          type="button"
+          onclick="changeCount(1)"
+        >
+          ＋
+        </button>
+
+      </div>
 
       <button id="addBtn">
         追加
@@ -81,11 +88,13 @@
 
     <div class="card">
 
-      <h2>現在の残高</h2>
+      <h2>現在の売上</h2>
 
       <div id="balance">
         0円
       </div>
+
+      <ul id="list"></ul>
 
     </div>
 
@@ -108,9 +117,7 @@ function showTab(tab){
     .add("hidden");
 
   document
-    .getElementById(
-      `${tab}-tab`
-    )
+    .getElementById(`${tab}-tab`)
     .classList
     .remove("hidden");
 }

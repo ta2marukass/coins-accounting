@@ -1,11 +1,61 @@
 *{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  background:#f5f5f5;
+  font-family:sans-serif;
+  padding:20px;
+}
+
+.container{
+  max-width:600px;
+  margin:auto;
+}
+
+h1{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.card{
+  background:white;
   border-radius:12px;
+  padding:20px;
   margin-bottom:20px;
   box-shadow:0 2px 8px rgba(0,0,0,0.1);
 }
 
-.balance-card{
-  text-align:center;
+.form-card{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+input,
+select,
+button{
+  font-size:16px;
+  padding:12px;
+  border-radius:8px;
+}
+
+input,
+select{
+  border:1px solid #ccc;
+}
+
+button{
+  border:none;
+  background:#007bff;
+  color:white;
+  cursor:pointer;
+}
+
+button:hover{
+  opacity:0.9;
 }
 
 #balance{
@@ -14,31 +64,9 @@
   margin-top:10px;
 }
 
-.form-card{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-input,
-select,
-button{
-  padding:12px;
-  font-size:16px;
-  border-radius:8px;
-  border:1px solid #ccc;
-}
-
-button{
-  cursor:pointer;
-  border:none;
-  background:#007bff;
-  color:white;
-  font-weight:bold;
-}
-
-button:hover{
-  opacity:0.9;
+.history-title{
+  margin-top:24px;
+  margin-bottom:12px;
 }
 
 #list{
@@ -49,13 +77,14 @@ button:hover{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:12px;
-  border-bottom:1px solid #ddd;
+  padding:12px 0;
+  border-bottom:1px solid #eee;
 }
 
 .item-left{
   display:flex;
   flex-direction:column;
+  gap:4px;
 }
 
 .income{
@@ -69,10 +98,4 @@ button:hover{
 .delete-btn{
   background:red;
   padding:8px 12px;
-}
-
-@media(max-width:600px){
-  body{
-    padding:10px;
-  }
 }

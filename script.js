@@ -19,103 +19,147 @@ const firebaseConfig = {
   measurementId: "G-VBREPSYJEC"
 };
 const app = initializeApp(firebaseConfig);
+
 const db = getDatabase(app);
 
-const titleInput = document.getElementById("title");
-const amountInput = document.getElementById("amount");
-const typeInput = document.getElementById("type");
-const addBtn = document.getElementById("addBtn");
-const list = document.getElementById("list");
-const balance = document.getElementById("balance");
+const titleInput =
+  document.getElementById("title");
 
-const dataRef = ref(db, "accountData");
+const amountInput =
+  document.getElementById("amount");
 
-addBtn.addEventListener("click", async ()=>{
+const typeInput =
+  document.getElementById("type");
 
-  const title = titleInput.value.trim();
-  const amount = Number(amountInput.value);
-  const type = typeInput.value;
+const addBtn =
+  document.getElementById("addBtn");
 
-  if(title === ""){
-    alert("内容を入力してください");
-    return;
-  }
+const list =
+  document.getElementById("list");
 
-  if(amount <= 0 || isNaN(amount)){
-    alert("正しい金額を入力してください");
-    return;
-  }
+const balance =
+  document.getElementById("balance");
 
-  const item = {
-    title,
-    amount,
-    type,
-    createdAt: Date.now()
-  };
+const dataRef =
+  ref(db,"accountData");
 
-  await push(dataRef, item);
+addBtn.addEventListener(
+  "click",
+  async ()=>{
 
-  titleInput.value = "";
-  amountInput.value = "";
-});
+    const title =
+      titleInput.value.trim();
 
-onValue(dataRef, (snapshot)=>{
+    const amount =
+      Number(amountInput.value);
 
-  list.innerHTML = "";
+    const type =
+      typeInput.value;
 
-  let total = 0;
-
-  const data = snapshot.val();
-
-  if(!data){
-    balance.textContent = "0円";
-    return;
-  }
-
-  const entries = Object.entries(data).reverse();
-
-  entries.forEach(([key,item])=>{
-
-    const li = document.createElement("li");
-
-    const sign =
-      item.type === "income" ? "+" : "-";
-
-    if(item.type === "income"){
-      total += item.amount;
-    }else{
-      total -= item.amount;
+    if(title===""){
+      alert("内容を入力してください");
+      return;
     }
 
-    li.innerHTML = `
-      ${item.title}
-      ${sign}${item.amount}円
-      <button class="delete-btn">削除</button>
-    `;
+    if(
+      amount<=0 ||
+      isNaN(amount)
+    ){
+      alert("金額を入力してください");
+      return;
+    }
 
-    const deleteBtn =
-      li.querySelector(".delete-btn");
-
-    deleteBtn.addEventListener("click", async ()=>{
-
-      try{
-
-        await remove(ref(db, `accountData/${key}`));
-
-        console.log("削除成功");
-
-      }catch(error){
-
-        console.error(error);
-
-        alert(error.message);
-
-      }
-
+    await push(dataRef,{
+      title,
+      amount,
+      type,
+      createdAt:Date.now()
     });
 
-    list.appendChild(li);
-  });
+    titleInput.value="";
+    amountInput.value="";
+  }
+);
 
-  balance.textContent = `${total}円`;
+onValue(dataRef,(snapshot)=>{
+
+  list.innerHTML="";
+
+  let total=0;
+
+  const data =
+    snapshot.val();
+
+  if(!data){
+
+    balance.textContent =
+      "0円";
+
+    return;
+  }
+
+  const entries =
+    Object.entries(data).reverse();
+
+  entries.forEach(
+    ([key,item])=>{
+
+      const li =
+        document.createElement("li");
+
+      li.className =
+        "item";
+
+      const sign =
+        item.type==="income"
+        ? "+"
+        : "-";
+
+      if(
+        item.type==="income"
+      ){
+        total += item.amount;
+      }else{
+        total -= item.amount;
+      }
+
+      li.innerHTML = `
+        <div class="item-left">
+          <strong>${item.title}</strong>
+
+          <span class="${item.type}">
+            ${sign}${item.amount}円
+          </span>
+        </div>
+
+        <button class="delete-btn">
+          削除
+        </button>
+      `;
+
+      const deleteBtn =
+        li.querySelector(".delete-btn");
+
+      deleteBtn.addEventListener(
+        "click",
+        async ()=>{
+
+          await remove(
+            ref(
+              db,
+              `accountData/${key}`
+            )
+          );
+
+        }
+      );
+
+      list.appendChild(li);
+
+    }
+  );
+
+  balance.textContent =
+    `${total}円`;
+
 });

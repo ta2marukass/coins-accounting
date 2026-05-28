@@ -17,18 +17,31 @@ const firebaseConfig = {
   messagingSenderId: "852862668508",
   appId: "1:852862668508:web:7ad243fc8244a352f4ee19",
   measurementId: "G-VBREPSYJEC"
-};const app = initializeApp(firebaseConfig);
+};
+
+
+const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const dataRef = ref(db, "accountData");
 
 document.addEventListener("DOMContentLoaded", () => {
 
   const addBtn = document.getElementById("addBtn");
-  const balance = document.getElementById("balance");
-  const list = document.getElementById("list");
 
-  const inputTab = document.getElementById("input-tab");
-  const balanceTab = document.getElementById("balance-tab");
+  const balance =
+    document.getElementById("balance");
+
+  const previewTotal =
+    document.getElementById("previewTotal");
+
+  const list =
+    document.getElementById("list");
+
+  const inputTab =
+    document.getElementById("input-tab");
+
+  const balanceTab =
+    document.getElementById("balance-tab");
 
   const counts = {
     plain: 0,
@@ -37,51 +50,117 @@ document.addEventListener("DOMContentLoaded", () => {
     matcha: 0
   };
 
+  function updatePreviewTotal() {
+
+    let total = 0;
+
+    const products = [
+      "plain",
+      "strawberry",
+      "cocoa",
+      "matcha"
+    ];
+
+    products.forEach((key) => {
+
+      const price =
+        Number(
+          document.getElementById(
+            `price-${key}`
+          )?.value
+        ) || 0;
+
+      total +=
+        price * counts[key];
+
+    });
+
+    previewTotal.textContent =
+      `${total}円`;
+  }
+
   document
     .querySelectorAll("[data-action]")
     .forEach((btn) => {
 
       btn.addEventListener("click", () => {
 
-        const target = btn.dataset.target;
-        const action = btn.dataset.action;
+        const target =
+          btn.dataset.target;
 
-        if (action === "plus") counts[target]++;
+        const action =
+          btn.dataset.action;
+
+        if (action === "plus") {
+          counts[target]++;
+        }
 
         if (
           action === "minus" &&
           counts[target] > 0
-        ){
+        ) {
           counts[target]--;
         }
 
         document.getElementById(
           `count-${target}`
-        ).textContent = counts[target];
+        ).textContent =
+          counts[target];
+
+        updatePreviewTotal();
 
       });
 
     });
 
   document
-    .getElementById("tab-input")
-    ?.addEventListener("click", () => {
+    .querySelectorAll(
+      'input[id^="price-"]'
+    )
+    .forEach((input) => {
 
-      inputTab?.classList.remove("hidden");
-      balanceTab?.classList.add("hidden");
+      input.addEventListener(
+        "input",
+        updatePreviewTotal
+      );
 
     });
 
   document
+    .getElementById("tab-input")
+    ?.addEventListener(
+      "click",
+      () => {
+
+        inputTab.classList.remove(
+          "hidden"
+        );
+
+        balanceTab.classList.add(
+          "hidden"
+        );
+
+      }
+    );
+
+  document
     .getElementById("tab-balance")
-    ?.addEventListener("click", () => {
+    ?.addEventListener(
+      "click",
+      () => {
 
-      inputTab?.classList.add("hidden");
-      balanceTab?.classList.remove("hidden");
+        inputTab.classList.add(
+          "hidden"
+        );
 
-    });
+        balanceTab.classList.remove(
+          "hidden"
+        );
 
-  addBtn?.addEventListener(
+      }
+    );
+
+  addBtn.addEventListener(
     "click",
     async () => {
 
@@ -98,76 +177,78 @@ document.addEventListener("DOMContentLoaded", () => {
           Number(
             document.getElementById(
               `price-${key}`
-            )?.value
+            ).value
           );
 
-        const count = counts[key];
+        const count =
+          counts[key];
 
         if (
           price > 0 &&
           count > 0
         ) {
 
-          await push(dataRef, {
-            title: name,
-            amount: price,
-            count: count,
-            createdAt: Date.now()
-          });
-
-        }
-
-        const priceInput =
-          document.getElementById(
-            `price-${key}`
+          await push(
+            dataRef,
+            {
+              title: name,
+              amount: price,
+              count: count,
+              createdAt: Date.now()
+            }
           );
 
-        if(priceInput){
-          priceInput.value = "";
         }
+
+        document.getElementById(
+          `price-${key}`
+        ).value = "";
 
         counts[key] = 0;
 
         document.getElementById(
           `count-${key}`
         ).textContent = "0";
+
       }
+
+      updatePreviewTotal();
 
     }
   );
 
   onValue(dataRef, (snapshot) => {
 
-    const data = snapshot.val();
-
     let total = 0;
 
-    if(list){
-      list.innerHTML = "";
-    }
+    list.innerHTML = "";
+
+    const data =
+      snapshot.val();
 
     if (!data) {
 
-      if(balance){
-        balance.textContent = "0円";
-      }
+      balance.textContent = "0円";
 
       return;
     }
 
-    Object.entries(data)
+    Object
+      .entries(data)
       .reverse()
-      .forEach(([key, item]) => {
+      .forEach(
+        ([key, item]) => {
 
-        const subtotal =
-          item.amount * item.count;
+          const subtotal =
+            item.amount *
+            item.count;
 
-        total += subtotal;
-
-        if(list){
+          total += subtotal;
 
           const li =
-            document.createElement("li");
+            document.createElement(
+              "li"
+            );
 
           li.className = "item";
 
@@ -177,12 +258,16 @@ document.addEventListener("DOMContentLoaded", () => {
               ${item.amount}円 × ${item.count}
               = ${subtotal}円
             </span>
+
             <button class="delete-btn">
               削除
             </button>
           `;
 
-          li.querySelector(".delete-btn")
+          li
+            .querySelector(
+              ".delete-btn"
+            )
             .addEventListener(
               "click",
               async () => {
@@ -200,14 +285,13 @@ document.addEventListener("DOMContentLoaded", () => {
           list.appendChild(li);
 
         }
+      );
 
-      });
-
-    if(balance){
-      balance.textContent =
-        `${total}円`;
-    }
+    balance.textContent =
+      `${total}円`;
 
   });
+
+  updatePreviewTotal();
 
 });

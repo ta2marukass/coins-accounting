@@ -19,6 +19,7 @@ const firebaseConfig = {
   measurementId: "G-VBREPSYJEC"
 };
 
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const dataRef = ref(db, "accountData");
@@ -122,7 +123,6 @@ document.addEventListener("DOMContentLoaded",()=>{
     amountInput.value = "";
 
     count = 1;
-
     updateCount();
 
   });
@@ -138,13 +138,12 @@ document.addEventListener("DOMContentLoaded",()=>{
     if(!data){
 
       balance.textContent = "0円";
-
       return;
     }
 
-    Object.values(data)
+    Object.entries(data)
       .reverse()
-      .forEach((item)=>{
+      .forEach(([key,item])=>{
 
         const subtotal =
           item.amount * item.count;
@@ -156,8 +155,43 @@ document.addEventListener("DOMContentLoaded",()=>{
 
         li.className = "item";
 
-        li.textContent =
-          `${item.title} ${item.amount}円 × ${item.count} = ${subtotal}円`;
+        li.innerHTML = `
+          <span>
+            ${item.title}
+            ${item.amount}円 × ${item.count}
+            = ${subtotal}円
+          </span>
+
+          <button class="delete-btn">
+            削除
+          </button>
+        `;
+
+        const deleteBtn =
+          li.querySelector(".delete-btn");
+
+        deleteBtn.addEventListener(
+          "click",
+          async ()=>{
+
+            try{
+
+              await remove(
+                ref(
+                  db,
+                  `accountData/${key}`
+                )
+              );
+
+            }catch(error){
+
+              console.error(error);
+              alert("削除に失敗しました");
+
+            }
+
+          }
+        );
 
         list.appendChild(li);
 

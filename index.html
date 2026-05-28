@@ -1,115 +1,211 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
   <title>売上管理アプリ</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
+
   <h1>売上管理アプリ</h1>
 
   <div class="tabs">
-    <button type="button" id="tab-input">入力</button>
-    <button type="button" id="tab-balance">残高</button>
+    <button id="tab-input">
+      入力
+    </button>
+
+    <button id="tab-balance">
+      履歴
+    </button>
   </div>
 
-  <div class="card form-card">
+  <section id="input-tab">
 
-  <div class="product-block">
-    <h3>プレーン味</h3>
+    <div class="card form-card">
 
-    <input
-      type="number"
-      id="price-plain"
-      placeholder="価格"
-    >
+      <div class="product-block">
 
-    <div class="count-box">
-      <button type="button" data-target="plain" data-action="minus">−</button>
-      <span id="count-plain">0</span>
-      <button type="button" data-target="plain" data-action="plus">＋</button>
+        <h3>プレーン味</h3>
+
+        <input
+          type="number"
+          id="price-plain"
+          placeholder="価格"
+        >
+
+        <div class="count-box">
+          <button
+            data-target="plain"
+            data-action="minus"
+          >
+            −
+          </button>
+
+          <span id="count-plain">
+            0
+          </span>
+
+          <button
+            data-target="plain"
+            data-action="plus"
+          >
+            ＋
+          </button>
+        </div>
+
+      </div>
+
+      <div class="product-block">
+
+        <h3>ストロベリー味</h3>
+
+        <input
+          type="number"
+          id="price-strawberry"
+          placeholder="価格"
+        >
+
+        <div class="count-box">
+          <button
+            data-target="strawberry"
+            data-action="minus"
+          >
+            −
+          </button>
+
+          <span id="count-strawberry">
+            0
+          </span>
+
+          <button
+            data-target="strawberry"
+            data-action="plus"
+          >
+            ＋
+          </button>
+        </div>
+
+      </div>
+
+      <div class="product-block">
+
+        <h3>ココア味</h3>
+
+        <input
+          type="number"
+          id="price-cocoa"
+          placeholder="価格"
+        >
+
+        <div class="count-box">
+          <button
+            data-target="cocoa"
+            data-action="minus"
+          >
+            −
+          </button>
+
+          <span id="count-cocoa">
+            0
+          </span>
+
+          <button
+            data-target="cocoa"
+            data-action="plus"
+          >
+            ＋
+          </button>
+        </div>
+
+      </div>
+
+      <div class="product-block">
+
+        <h3>抹茶味</h3>
+
+        <input
+          type="number"
+          id="price-matcha"
+          placeholder="価格"
+        >
+
+        <div class="count-box">
+          <button
+            data-target="matcha"
+            data-action="minus"
+          >
+            −
+          </button>
+
+          <span id="count-matcha">
+            0
+          </span>
+
+          <button
+            data-target="matcha"
+            data-action="plus"
+          >
+            ＋
+          </button>
+        </div>
+
+      </div>
+
+      <button id="addBtn">
+        追加
+      </button>
+
+      <div class="total-box">
+
+        <div>
+          追加前の金額
+          <div id="previewTotal">
+            0円
+          </div>
+        </div>
+
+        <div>
+          現在の合計
+          <div id="balance">
+            0円
+          </div>
+        </div>
+
+      </div>
+
     </div>
-  </div>
 
-  <div class="product-block">
-    <h3>ストロベリー味</h3>
-
-    <input
-      type="number"
-      id="price-strawberry"
-      placeholder="価格"
-    >
-
-    <div class="count-box">
-      <button type="button" data-target="strawberry" data-action="minus">−</button>
-      <span id="count-strawberry">0</span>
-      <button type="button" data-target="strawberry" data-action="plus">＋</button>
-    </div>
-  </div>
-
-  <div class="product-block">
-    <h3>ココア味</h3>
-
-    <input
-      type="number"
-      id="price-cocoa"
-      placeholder="価格"
-    >
-
-    <div class="count-box">
-      <button type="button" data-target="cocoa" data-action="minus">−</button>
-      <span id="count-cocoa">0</span>
-      <button type="button" data-target="cocoa" data-action="plus">＋</button>
-    </div>
-  </div>
-
-  <div class="product-block">
-    <h3>抹茶味</h3>
-
-    <input
-      type="number"
-      id="price-matcha"
-      placeholder="価格"
-    >
-
-    <div class="count-box">
-      <button type="button" data-target="matcha" data-action="minus">−</button>
-      <span id="count-matcha">0</span>
-      <button type="button" data-target="matcha" data-action="plus">＋</button>
-    </div>
-  </div>
-
-  <button id="addBtn">
-    追加
-  </button>
-  <div class="total-box">
-
-    現在の合計
-
-    <div id="balance">
-      0円
-    </div>
-
-  </div>
-
-</div>
+  </section>
 
   <section
     id="balance-tab"
     class="hidden"
   >
+
     <div class="card">
-      <h2>現在の売上</h2>
-      <div id="balance">0円</div>
+
+      <h2>
+        履歴
+      </h2>
 
       <ul id="list"></ul>
+
     </div>
+
   </section>
+
 </div>
 
-<script type="module" src="script.js"></script>
+<script
+  type="module"
+  src="script.js"
+></script>
+
 </body>
 </html>

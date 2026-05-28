@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   addBtn.addEventListener("click",async ()=>{
 
     const title =
-      titleInput.value.trim();
+      titleInput.value;
 
     const amount =
       Number(amountInput.value);

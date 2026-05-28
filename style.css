@@ -5,8 +5,8 @@
 }
 
 body{
-  background:#f5f5f5;
   font-family:sans-serif;
+  background:#f5f5f5;
   padding:20px;
 }
 
@@ -28,13 +28,14 @@ h1{
 
 .tabs button{
   flex:1;
+  padding:12px;
 }
 
 .card{
-  background:white;
+  background:#fff;
   border-radius:12px;
   padding:20px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+  box-shadow:0 2px 8px rgba(0,0,0,.1);
 }
 
 .form-card{
@@ -45,20 +46,8 @@ h1{
 
 input,
 button{
-  font-size:16px;
   padding:12px;
-  border-radius:8px;
-}
-
-input{
-  border:1px solid #ccc;
-}
-
-button{
-  border:none;
-  background:#007bff;
-  color:white;
-  cursor:pointer;
+  font-size:16px;
 }
 
 .count-box{
@@ -85,7 +74,7 @@ button{
 }
 
 .item{
-  padding:10px 0;
+  padding:8px 0;
   border-bottom:1px solid #eee;
 }
 

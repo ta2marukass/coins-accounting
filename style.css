@@ -99,3 +99,16 @@ button:hover{
   background:red;
   padding:8px 12px;
 }
+.tabs{
+  display:flex;
+  gap:8px;
+  margin-bottom:20px;
+}
+
+.tabs button{
+  flex:1;
+}
+
+.hidden{
+  display:none;
+}

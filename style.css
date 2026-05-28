@@ -44,15 +44,13 @@ h1{
 }
 
 input,
-select,
 button{
   font-size:16px;
   padding:12px;
   border-radius:8px;
 }
 
-input,
-select{
+input{
   border:1px solid #ccc;
 }
 
@@ -63,10 +61,32 @@ button{
   cursor:pointer;
 }
 
+.count-box{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:20px;
+}
+
+#count{
+  font-size:24px;
+  min-width:40px;
+  text-align:center;
+}
+
 #balance{
   font-size:36px;
   font-weight:bold;
-  margin-top:16px;
+  margin:20px 0;
+}
+
+#list{
+  list-style:none;
+}
+
+.item{
+  padding:10px 0;
+  border-bottom:1px solid #eee;
 }
 
 .hidden{

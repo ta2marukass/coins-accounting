@@ -2,43 +2,60 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>会計アプリ</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <h1>会計アプリ</h1>
+  <h1>会計アプリ</h1>
 
-    <div class="card balance-card">
-      <h2>現在の残高</h2>
-      <div id="balance">0円</div>
-    </div>
+  <div class="card form-card">
 
-    <div class="card form-card">
-      <h2>データ追加</h2>
+    <input
+      type="text"
+      id="title"
+      placeholder="内容（例：食費）"
+    >
 
-      <input type="text" id="title" placeholder="内容">
+    <input
+      type="number"
+      id="amount"
+      placeholder="金額"
+    >
 
-      <input type="number" id="amount" placeholder="金額">
+    <select id="type">
+      <option value="expense">支出</option>
+      <option value="income">収入</option>
+    </select>
 
-      <select id="type">
-        <option value="income">収入</option>
-        <option value="expense">支出</option>
-      </select>
-
-      <button id="addBtn">追加</button>
-    </div>
-
-    <div class="card history-card">
-      <h2>履歴</h2>
-      <ul id="list"></ul>
-    </div>
+    <button id="addBtn">
+      追加
+    </button>
 
   </div>
 
-  <script type="module" src="script.js"></script>
+  <div class="card account-card">
+
+    <h2>現在の残高</h2>
+
+    <div id="balance">
+      0円
+    </div>
+
+    <h2 class="history-title">
+      履歴
+    </h2>
+
+    <ul id="list"></ul>
+
+  </div>
+
+</div>
+
+<script type="module" src="script.js"></script>
+
 </body>
 </html>

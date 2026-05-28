@@ -19,45 +19,72 @@ const firebaseConfig = {
   measurementId: "G-VBREPSYJEC"
 };
 
-const app =
-  initializeApp(firebaseConfig);
 
-const db =
-  getDatabase(app);
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-const titleInput =
-  document.getElementById("title");
+const titleInput = document.getElementById("title");
+const amountInput = document.getElementById("amount");
+const addBtn = document.getElementById("addBtn");
 
-const amountInput =
-  document.getElementById("amount");
+const plusBtn = document.getElementById("plusBtn");
+const minusBtn = document.getElementById("minusBtn");
+const countText = document.getElementById("count");
 
-const addBtn =
-  document.getElementById("addBtn");
+const balance = document.getElementById("balance");
+const list = document.getElementById("list");
 
-const balance =
-  document.getElementById("balance");
+const tabInputBtn =
+  document.getElementById("tabInputBtn");
 
-const list =
-  document.getElementById("list");
+const tabBalanceBtn =
+  document.getElementById("tabBalanceBtn");
+
+const inputTab =
+  document.getElementById("input-tab");
+
+const balanceTab =
+  document.getElementById("balance-tab");
 
 const dataRef =
   ref(db,"accountData");
 
 let count = 1;
 
-window.changeCount =
-function(num){
+function renderCount(){
+  countText.textContent = count;
+}
 
-  count += num;
+plusBtn.addEventListener("click", ()=>{
 
-  if(count < 1){
-    count = 1;
+  count++;
+
+  renderCount();
+
+});
+
+minusBtn.addEventListener("click", ()=>{
+
+  if(count > 1){
+    count--;
+    renderCount();
   }
 
-  document
-    .getElementById("count")
-    .textContent = count;
-};
+});
+
+tabInputBtn.addEventListener("click", ()=>{
+
+  inputTab.classList.remove("hidden");
+  balanceTab.classList.add("hidden");
+
+});
+
+tabBalanceBtn.addEventListener("click", ()=>{
+
+  inputTab.classList.add("hidden");
+  balanceTab.classList.remove("hidden");
+
+});
 
 addBtn.addEventListener(
   "click",
@@ -69,13 +96,13 @@ addBtn.addEventListener(
     const amount =
       Number(amountInput.value);
 
-    if(title===""){
+    if(title === ""){
       alert("商品名を入力してください");
       return;
     }
 
     if(
-      amount<=0 ||
+      amount <= 0 ||
       isNaN(amount)
     ){
       alert("値段を入力してください");
@@ -86,17 +113,16 @@ addBtn.addEventListener(
       title,
       amount,
       count,
-      createdAt:Date.now()
+      createdAt: Date.now()
     });
 
-    titleInput.value="";
-    amountInput.value="";
+    titleInput.value = "";
+    amountInput.value = "";
 
     count = 1;
 
-    document
-      .getElementById("count")
-      .textContent = count;
+    renderCount();
+
   }
 );
 
@@ -106,39 +132,36 @@ onValue(dataRef,(snapshot)=>{
 
   list.innerHTML = "";
 
-  const data =
-    snapshot.val();
+  const data = snapshot.val();
 
   if(!data){
 
-    balance.textContent =
-      "0円";
+    balance.textContent = "0円";
 
     return;
   }
 
-  const entries =
-    Object.entries(data).reverse();
+  Object
+    .values(data)
+    .reverse()
+    .forEach((item)=>{
 
-  entries.forEach(([key,item])=>{
+      const subtotal =
+        item.amount * item.count;
 
-    const subtotal =
-      item.amount * item.count;
+      total += subtotal;
 
-    total += subtotal;
+      const li =
+        document.createElement("li");
 
-    const li =
-      document.createElement("li");
+      li.className = "item";
 
-    li.className =
-      "item";
+      li.textContent =
+        `${item.title} ${item.amount}円 × ${item.count} = ${subtotal}円`;
 
-    li.textContent =
-      `${item.title} ${item.amount}円 × ${item.count} = ${subtotal}円`;
+      list.appendChild(li);
 
-    list.appendChild(li);
-
-  });
+    });
 
   balance.textContent =
     `${total}円`;

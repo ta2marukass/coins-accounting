@@ -1,134 +1,126 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
   <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport"
+        content="width=device-width,initial-scale=1.0">
 
   <title>会計アプリ</title>
 
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
+  <link rel="stylesheet"
+        href="style.css">
 </head>
 
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <h1>会計アプリ</h1>
+  <h1>会計アプリ</h1>
 
-    <div class="tabs">
+  <div class="tabs">
 
-      <button
-        type="button"
-        onclick="showTab('input')"
+    <button
+      onclick="showTab('input')"
+      type="button"
+    >
+      入力
+    </button>
+
+    <button
+      onclick="showTab('balance')"
+      type="button"
+    >
+      残高
+    </button>
+
+  </div>
+
+  <div
+    id="input-tab"
+    class="tab-content"
+  >
+
+    <div class="card form-card">
+
+      <input
+        type="text"
+        id="title"
+        placeholder="内容"
       >
-        入力
-      </button>
 
-      <button
-        type="button"
-        onclick="showTab('account')"
+      <input
+        type="number"
+        id="amount"
+        placeholder="金額"
       >
-        残高
+
+      <select id="type">
+
+        <option value="expense">
+          支出
+        </option>
+
+        <option value="income">
+          収入
+        </option>
+
+      </select>
+
+      <button id="addBtn">
+        追加
       </button>
 
     </div>
 
-    <div
-      id="input-tab"
-      class="tab-content"
-    >
+  </div>
 
-      <div class="card form-card">
+  <div
+    id="balance-tab"
+    class="tab-content hidden"
+  >
 
-        <input
-          type="text"
-          id="title"
-          placeholder="内容"
-        >
+    <div class="card">
 
-        <input
-          type="number"
-          id="amount"
-          placeholder="金額"
-        >
+      <h2>現在の残高</h2>
 
-        <select id="type">
-          <option value="expense">
-            支出
-          </option>
-
-          <option value="income">
-            収入
-          </option>
-        </select>
-
-        <button id="addBtn">
-          追加
-        </button>
-
-      </div>
-
-    </div>
-
-    <div
-      id="account-tab"
-      class="tab-content hidden"
-    >
-
-      <div class="card">
-
-        <h2>現在の残高</h2>
-
-        <div id="balance">
-          0円
-        </div>
-
-        <h2 class="history-title">
-          履歴
-        </h2>
-
-        <ul id="list"></ul>
-
+      <div id="balance">
+        0円
       </div>
 
     </div>
 
   </div>
 
-  <script>
+</div>
 
-    function showTab(tab){
+<script>
 
-      document
-        .getElementById("input-tab")
-        .classList
-        .add("hidden");
+function showTab(tab){
 
-      document
-        .getElementById("account-tab")
-        .classList
-        .add("hidden");
+  document
+    .getElementById("input-tab")
+    .classList
+    .add("hidden");
 
-      document
-        .getElementById(tab + "-tab")
-        .classList
-        .remove("hidden");
-    }
+  document
+    .getElementById("balance-tab")
+    .classList
+    .add("hidden");
 
-  </script>
+  document
+    .getElementById(
+      `${tab}-tab`
+    )
+    .classList
+    .remove("hidden");
+}
 
-  <script
-    type="module"
-    src="script.js"
-  ></script>
+</script>
+
+<script
+  type="module"
+  src="script.js"
+></script>
 
 </body>
-
 </html>

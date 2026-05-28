@@ -20,6 +20,7 @@ const firebaseConfig = {
 };
 
 
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const dataRef = ref(db, "accountData");
@@ -52,8 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updatePreviewTotal() {
 
-    let total = 0;
-
     const products = [
       "plain",
       "strawberry",
@@ -61,19 +60,27 @@ document.addEventListener("DOMContentLoaded", () => {
       "matcha"
     ];
 
-    products.forEach((key) => {
+    let total = 0;
+
+    for (const key of products) {
+
+      const input =
+        document.getElementById(
+          `price-${key}`
+        );
 
       const price =
-        Number(
-          document.getElementById(
-            `price-${key}`
-          )?.value
+        parseInt(
+          input?.value || "0",
+          10
         ) || 0;
 
-      total +=
-        price * counts[key];
+      const count =
+        counts[key] || 0;
 
-    });
+      total +=
+        price * count;
+    }
 
     previewTotal.textContent =
       `${total}円`;
@@ -178,7 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById(
               `price-${key}`
             ).value
-          );
+          ) || 0;
 
         const count =
           counts[key];
@@ -228,7 +235,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!data) {
 
-      balance.textContent = "0円";
+      balance.textContent =
+        "0円";
 
       return;
     }
@@ -250,7 +258,8 @@ document.addEventListener("DOMContentLoaded", () => {
               "li"
             );
 
-          li.className = "item";
+          li.className =
+            "item";
 
           li.innerHTML = `
             <span>
@@ -275,7 +284,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 await remove(
                   ref(
                     db,
-                    `accountData/${key}`
+                    \`accountData/\${key}\`
                   )
                 );
 

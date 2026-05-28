@@ -1,80 +1,79 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>売上管理アプリ</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
 <div class="container">
-
   <h1>売上管理アプリ</h1>
 
   <div class="tabs">
-    <button type="button" id="tabInputBtn">入力</button>
-    <button type="button" id="tabBalanceBtn">残高</button>
+    <button type="button" id="tab-input">入力</button>
+    <button type="button" id="tab-balance">残高</button>
   </div>
 
-  <div id="input-tab" class="tab-content">
-
+  <section id="input-tab">
     <div class="card form-card">
 
       <input
         type="text"
         id="title"
         placeholder="商品名"
-      >
+      />
 
       <input
         type="number"
         id="amount"
         placeholder="商品の値段"
-      >
+      />
 
       <div class="count-box">
 
-        <button type="button" id="minusBtn">
+        <button
+          type="button"
+          data-action="minus"
+        >
           −
         </button>
 
         <span id="count">1</span>
 
-        <button type="button" id="plusBtn">
+        <button
+          type="button"
+          data-action="plus"
+        >
           ＋
         </button>
 
       </div>
 
-      <button type="button" id="addBtn">
+      <button
+        type="button"
+        id="addBtn"
+      >
         追加
       </button>
 
     </div>
+  </section>
 
-  </div>
-
-  <div
+  <section
     id="balance-tab"
-    class="tab-content hidden"
+    class="hidden"
   >
-
     <div class="card">
-
       <h2>現在の売上</h2>
-
       <div id="balance">0円</div>
 
       <ul id="list"></ul>
-
     </div>
-
-  </div>
-
+  </section>
 </div>
 
 <script type="module" src="script.js"></script>
-
 </body>
 </html>

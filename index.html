@@ -2,7 +2,8 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
   <title>会計アプリ</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -12,48 +13,97 @@
 
   <h1>会計アプリ</h1>
 
-  <div class="card form-card">
-
-    <input
-      type="text"
-      id="title"
-      placeholder="内容"
-    >
-
-    <input
-      type="number"
-      id="amount"
-      placeholder="金額"
-    >
-
-    <select id="type">
-      <option value="expense">支出</option>
-      <option value="income">収入</option>
-    </select>
-
-    <button id="addBtn">
-      追加
+  <div class="tabs">
+    <button onclick="showTab('input')">
+      入力
     </button>
+
+    <button onclick="showTab('account')">
+      残高
+    </button>
+  </div>
+
+  <div
+    id="input-tab"
+    class="tab-content"
+  >
+
+    <div class="card form-card">
+
+      <input
+        type="text"
+        id="title"
+        placeholder="内容"
+      >
+
+      <input
+        type="number"
+        id="amount"
+        placeholder="金額"
+      >
+
+      <select id="type">
+        <option value="expense">
+          支出
+        </option>
+
+        <option value="income">
+          収入
+        </option>
+      </select>
+
+      <button id="addBtn">
+        追加
+      </button>
+
+    </div>
 
   </div>
 
-  <div class="card account-card">
+  <div
+    id="account-tab"
+    class="tab-content hidden"
+  >
 
-    <h2>現在の残高</h2>
+    <div class="card">
 
-    <div id="balance">
-      0円
+      <h2>現在の残高</h2>
+
+      <div id="balance">
+        0円
+      </div>
+
+      <h2 class="history-title">
+        履歴
+      </h2>
+
+      <ul id="list"></ul>
+
     </div>
-
-    <h2 class="history-title">
-      履歴
-    </h2>
-
-    <ul id="list"></ul>
 
   </div>
 
 </div>
+
+<script>
+function showTab(tab){
+
+  document
+    .getElementById("input-tab")
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById("account-tab")
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById(`${tab}-tab`)
+    .classList
+    .remove("hidden");
+}
+</script>
 
 <script type="module" src="script.js"></script>
 
